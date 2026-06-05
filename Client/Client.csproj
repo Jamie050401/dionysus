@@ -9,4 +9,12 @@
     <ItemGroup>
         <ProjectReference Include="..\Server\Server.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Grpc.Net.Client" Version="2.80.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.81.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
 </Project>
