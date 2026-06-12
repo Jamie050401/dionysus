@@ -28,31 +28,34 @@ public static class GrpcChannelPool
 
     private static void MonitoringLoop()
     {
-        while (!CancellationToken.IsCancellationRequested)
+        try
         {
-            Thread.Sleep(MonitoringInterval);
-
-            try
+            while (!CancellationToken.IsCancellationRequested)
             {
-                MonitoringSemaphore.Wait();
+                Thread.Sleep(MonitoringInterval);
 
-                foreach (var (address, channelMember) in Channels)
+                try
                 {
-                    if (!channelMember.IsExpired)
-                        continue;
+                    MonitoringSemaphore.Wait();
 
-                    Channels.TryRemove(address, out _);
-                    channelMember.Channel.Dispose();
+                    foreach (var (address, channelMember) in Channels)
+                    {
+                        if (!channelMember.IsExpired)
+                            continue;
+
+                        Channels.TryRemove(address, out _);
+                        channelMember.Channel.Dispose();
+                    }
+                }
+                finally
+                {
+                    MonitoringSemaphore.Release();
                 }
             }
-            catch
-            {
-                // ignored
-            }
-            finally
-            {
-                MonitoringSemaphore.Release();
-            }
+        }
+        catch
+        {
+            // ignored
         }
     }
 
