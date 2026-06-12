@@ -1,0 +1,13 @@
+﻿services:
+  api:
+    image: api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+
+  ui.web:
+    image: ui.web
+    build:
+      context: .
+      dockerfile: UI.Web/Dockerfile
+
