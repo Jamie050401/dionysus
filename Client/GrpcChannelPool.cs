@@ -32,15 +32,26 @@ public static class GrpcChannelPool
         {
             Thread.Sleep(MonitoringInterval);
 
-            MonitoringSemaphore.Wait();
-
-            foreach (var (address, channelMember) in Channels)
+            try
             {
-                if (!channelMember.IsExpired)
-                    continue;
+                MonitoringSemaphore.Wait();
 
-                Channels.TryRemove(address, out _);
-                channelMember.Channel.Dispose();
+                foreach (var (address, channelMember) in Channels)
+                {
+                    if (!channelMember.IsExpired)
+                        continue;
+
+                    Channels.TryRemove(address, out _);
+                    channelMember.Channel.Dispose();
+                }
+            }
+            catch
+            {
+                // ignored
+            }
+            finally
+            {
+                MonitoringSemaphore.Release();
             }
         }
     }
