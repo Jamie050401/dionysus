@@ -2,12 +2,13 @@ using Grpc.Net.Client;
 
 namespace Dionysus.Client;
 
+// TODO: Consider possible generic type constraints for TClient
 public class GrpcService<TClient> : IDisposable
 {
-    public GrpcService(string address, Func<GrpcChannel, TClient> instantiator)
+    public GrpcService(string address, Func<GrpcChannel, TClient> constructor)
     {
         _channel = GrpcChannel.ForAddress(address);
-        Client = instantiator(_channel);
+        Client = constructor(_channel);
     }
 
     public void Dispose()
